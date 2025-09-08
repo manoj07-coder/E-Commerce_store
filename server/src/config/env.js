@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const shcema = Joi.object({
+const schema = Joi.object({
   NODE_ENV: Joi.string().valid("development", "production", "test").required(),
   PORT: Joi.number().default(4000),
   MONGO_URI: Joi.string().required(),
@@ -24,7 +24,7 @@ const shcema = Joi.object({
   SMTP_PASSWORD: Joi.string().required(),
 }).unknown();
 
-const { value: env, error } = shcema.validate(process.env);
+const { value: env, error } = schema.validate(process.env);
 
 if (error) {
   console.log("Invalid environment variables", error.details);
