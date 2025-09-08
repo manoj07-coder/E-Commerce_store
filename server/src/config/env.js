@@ -10,7 +10,7 @@ const schema = Joi.object({
   REDIS_HOST: Joi.string().required(),
   REDIS_PORT: Joi.number().required(),
   LOG_LEVEL: Joi.string()
-    .valid("fatal", "errror", "warn", "info", "debug", "trace", "silent")
+    .valid("fatal", "error", "warn", "info", "debug", "trace", "silent")
     .default("info"),
   CORS_ORIGIN: Joi.string().default("*"),
   JWT_SECRET: Joi.string().required(),
