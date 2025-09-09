@@ -1,5 +1,5 @@
 import { logger } from "../utils/logger.js";
-import { AppError } from "../utils/appError.js";
+import { AppError } from "../utils/AppError.js";
 import { fail } from "../utils/apiResponse.js";
 
 export const errorHandler = (err, _req, res, _next) => {
