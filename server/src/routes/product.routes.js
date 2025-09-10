@@ -13,7 +13,7 @@ const router = Router();
 router.get("/", getProducts);
 router.get("/:id", getProductById);
 router.post("/", authGuard, roleGuard(["seller", "admin"]), createProduct);
-router.put("/:id", updateProduct);
-router.delete("/:id", deleteProduct);
+router.put("/:id", authGuard, roleGuard(["seller", "admin"]), updateProduct);
+router.delete("/:id", authGuard, roleGuard(["seller", "admin"]), deleteProduct);
 
 export default router;
