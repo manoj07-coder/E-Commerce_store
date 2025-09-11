@@ -27,3 +27,11 @@ export const addToCart = asyncHandler(async (req, res) => {
   await cart.save();
   res.json(ok(cart));
 });
+
+export const getCart = asyncHandler(async (req, res) => {
+  let cart = await Cart.findOne({ user: req.user._id }).populate(
+    "items.product"
+  );
+  if (!cart) cart = { items: [] };
+  res.json(ok(cart));
+});
