@@ -15,7 +15,7 @@ export function getTransporter() {
   } else {
     //fallback: ethereal or a no-op transporter for local dev
     transporter = {
-      sendEmail: async (opts) => {
+      sendMail: async (opts) => {
         logger.info("Simulated sendEmail:", opts);
         return { messageId: "simulated" };
       },
@@ -26,10 +26,16 @@ export function getTransporter() {
 
 export async function sendOrderEmail(to, subject, html) {
   const t = getTransporter();
-  return t.sendEmail({
+  const info = await t.sendMail({
     from: ENV.EMAIL_FROM || "no-reply@example.com",
     to,
     subject,
     html,
   });
+  logger.info(`Email sent: ${info.messageId}`);
+  if (nodemailer.getTestMessageUrl) {
+    logger.info(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+  }
+
+  return info;
 }

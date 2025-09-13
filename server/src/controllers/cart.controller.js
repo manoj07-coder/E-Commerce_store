@@ -64,5 +64,15 @@ export const checkOut = asyncHandler(async (req, res) => {
     status: "pending",
   });
 
+  //push an email job to Redis list for the worker
+  const { getRedis } = await import("../loaders/redis.js");
+  const redis = getRedis();
+  const payload = {
+    to: req.user.email,
+    subject: "Order received",
+    html: `<p>Your order ${order._id} was created </p>`,
+  };
+  await redis.lpush("email:queue", JSON.stringify(payload));
+
   res.json(ok({ orderId: order._id }));
 });
