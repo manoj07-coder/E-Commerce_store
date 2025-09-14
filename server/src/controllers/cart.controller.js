@@ -64,15 +64,33 @@ export const checkOut = asyncHandler(async (req, res) => {
     status: "pending",
   });
 
+  const { createPaymentIntent } = await import("../services/paymentService.js");
+  const intent = await createPaymentIntent({
+    amount: total,
+    currency: "inr",
+    orderId: order._id,
+  });
+
+  order.paymentInfo = {
+    provider: "stripe",
+    providerId: intent.id,
+    status: intent.status,
+  };
+
+  await order.save();
+
   //push an email job to Redis list for the worker
   const { getRedis } = await import("../loaders/redis.js");
   const redis = getRedis();
   const payload = {
     to: req.user.email,
     subject: "Order received",
-    html: `<p>Your order ${order._id} was created </p>`,
+    html: `<p>Your order ${order._id} was created. Payment intent: ${intent.id} </p>`,
   };
   await redis.lpush("email:queue", JSON.stringify(payload));
 
-  res.json(ok({ orderId: order._id }));
+  cart.items = [];
+  await cart.save();
+
+  res.json(ok({ orderId: order._id, paymentIntent: intent }));
 });

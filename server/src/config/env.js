@@ -18,7 +18,7 @@ const schema = Joi.object({
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES_IN: Joi.string().default("15m"),
   REFRESH_TOKEN_EXPIRES_IN: Joi.string().default("7d"),
-  STRIPE_SECRET_KEY: Joi.string().allow(""),
+  STRIPE_SECRET: Joi.string().allow(""),
   EMAIL_FROM: Joi.string().email().allow(""),
   SMTP_HOST: Joi.string().allow(""),
   SMTP_PORT: Joi.number().allow(""),
