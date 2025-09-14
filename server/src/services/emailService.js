@@ -10,6 +10,7 @@ export function getTransporter() {
     transporter = nodemailer.createTransport({
       host: ENV.SMTP_HOST,
       port: Number(ENV.SMTP_PORT || 587),
+      secure: ENV.SMTP_PORT == 465,
       auth: { user: ENV.SMTP_USER, pass: ENV.SMTP_PASS },
     });
   } else {
