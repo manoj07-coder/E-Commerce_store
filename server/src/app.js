@@ -8,11 +8,17 @@ import { apiRateLimiter } from "./middlewares/rateLimiter.js";
 import { notFound } from "./middlewares/notFound.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import routes from "./routes/index.js";
+import stripeWebhookRouter from "./routes/webhook.js";
 
 export const createApp = () => {
   const app = express();
-  app.use(express.json({ limit: "1mb" }));
   app.use(pinoHttp({ logger }));
+
+  // ⚡ Stripe webhook FIRST, using express.raw() inside router
+  app.use("/api/webhooks", stripeWebhookRouter);
+
+  // Normal middleware for everything else
+  app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
 

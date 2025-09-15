@@ -3,6 +3,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import Cart from "../models/Cart.js";
 import { ok } from "../utils/apiResponse.js";
 import Order from "../models/Order.js";
+import Stripe from "stripe";
+import { ENV } from "../config/env.js";
+
+const stripe = new Stripe(ENV.STRIPE_SECRET, { apiVersion: "2024-06-20" });
 
 export const addToCart = asyncHandler(async (req, res) => {
   const { productId, qty = 1 } = req.body;
@@ -44,9 +48,7 @@ export const checkOut = asyncHandler(async (req, res) => {
   if (!cart || cart.items.length === 0) {
     return res.status(400).json({
       success: false,
-      error: {
-        message: "Cart empty",
-      },
+      error: { message: "Cart empty" },
     });
   }
 
@@ -57,6 +59,7 @@ export const checkOut = asyncHandler(async (req, res) => {
     return { product: i.product._id, qty: i.qty, price: i.price };
   });
 
+  // create Order in DB
   const order = await Order.create({
     user: req.user._id,
     items,
@@ -64,33 +67,34 @@ export const checkOut = asyncHandler(async (req, res) => {
     status: "pending",
   });
 
-  const { createPaymentIntent } = await import("../services/paymentService.js");
-  const intent = await createPaymentIntent({
-    amount: total,
-    currency: "inr",
-    orderId: order._id,
+  // create Stripe Checkout Session
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"], // add "link" if needed
+    line_items: cart.items.map((i) => ({
+      price_data: {
+        currency: "inr",
+        product_data: { name: i.product.name },
+        unit_amount: i.price * 100,
+      },
+      quantity: i.qty,
+    })),
+    mode: "payment",
+    metadata: { orderId: order._id.toString() },
+    success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: "http://localhost:3000/cancel",
   });
 
+  // save session info in order
   order.paymentInfo = {
     provider: "stripe",
-    providerId: intent.id,
-    status: intent.status,
+    checkoutSessionId: session.id,
+    status: "pending",
   };
-
   await order.save();
 
-  //push an email job to Redis list for the worker
-  const { getRedis } = await import("../loaders/redis.js");
-  const redis = getRedis();
-  const payload = {
-    to: req.user.email,
-    subject: "Order received",
-    html: `<p>Your order ${order._id} was created. Payment intent: ${intent.id} </p>`,
-  };
-  await redis.lpush("email:queue", JSON.stringify(payload));
-
+  // empty cart
   cart.items = [];
   await cart.save();
 
-  res.json(ok({ orderId: order._id, paymentIntent: intent }));
+  res.json(ok({ orderId: order._id, checkoutUrl: session.url }));
 });
