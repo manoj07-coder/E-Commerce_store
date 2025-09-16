@@ -11,7 +11,7 @@ import { authGuard, roleGuard } from "../middlewares/auth.js";
 const router = Router();
 
 router.post("/", authGuard, createReview);
-router.get("/product/:id", getReviewsByProduct);
+router.get("/product/:productId", getReviewsByProduct);
 router.put("/:id", authGuard, updateReview);
 router.delete("/:id", authGuard, deleteReview);
 router.get("/", authGuard, roleGuard(["admin"]), getAllReviews);
