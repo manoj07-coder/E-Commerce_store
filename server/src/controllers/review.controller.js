@@ -78,7 +78,39 @@ export const getReviewsByProduct = asyncHandler(async (req, res) => {
   res.json(ok({ total, page, limit, items }));
 });
 
-export const updateReview = asyncHandler(async (req, res) => {});
+export const updateReview = asyncHandler(async (req, res) => {
+  const reviewId = req.params.id;
+  const userId = req.user && req.user._id;
+  const { rating, comment } = req.body;
+
+  const review = await Review.findById(reviewId);
+  if (!review) throw new AppError("Review not found", 404);
+
+  //check ownership or admin
+  if (
+    review.user.toString() !== userId.toString() &&
+    req.user.role !== "admin"
+  ) {
+    throw new AppError("Forbidden", 403);
+  }
+
+  if (rating !== undefined) {
+    if (rating < 1 || rating > 5) throw new AppError("Rating must be 1-5", 400);
+    review.rating = rating;
+  }
+
+  if (comment !== undefined) review.comment = comment;
+
+  await review.save();
+
+  await updateProductStats(review.product);
+
+  const populated = await Review.findById(reviewId).populate(
+    "user",
+    "name email"
+  );
+  res.json(ok(populated));
+});
 
 export const deleteReview = asyncHandler(async (req, res) => {});
 
