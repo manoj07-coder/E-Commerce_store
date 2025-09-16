@@ -134,4 +134,19 @@ export const deleteReview = asyncHandler(async (req, res) => {
   res.json(ok({ id: reviewId }));
 });
 
-export const getAllReviews = asyncHandler(async (req, res) => {});
+export const getAllReviews = asyncHandler(async (req, res) => {
+  const page = Math.max(Number(req.query.page || 1), 1);
+  const limit = Math.max(Number(req.query.limit || 20), 1);
+  const skip = (page - 1) * limit;
+
+  const total = await Review.countDocuments();
+  const items = await Review.find()
+    .populate("user", "name email")
+    .populate("product", "name slug")
+    .sort("-createdAt")
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+  res.json(ok({ total, page, limit, items }));
+});
