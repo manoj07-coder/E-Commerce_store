@@ -3,6 +3,7 @@ import express from "express";
 import Stripe from "stripe";
 import { ENV } from "../config/env.js";
 import Order from "../models/Order.js";
+import Product from "../models/Product.js";
 
 const router = express.Router();
 const stripe = new Stripe(ENV.STRIPE_SECRET, { apiVersion: "2024-06-20" });
@@ -33,10 +34,18 @@ router.post(
         case "checkout.session.completed":
           const orderId = data.metadata?.orderId;
           if (!orderId) break;
-          await Order.findByIdAndUpdate(orderId, {
+          const order = await Order.findByIdAndUpdate(orderId, {
             status: "paid",
             "paymentInfo.status": "succeeded",
           });
+
+          if (order) {
+            for (const item of order.items) {
+              await Product.findByIdAndUpdate(item.product, {
+                $inc: { stock: -item.qty },
+              });
+            }
+          }
           console.log("✅ Order paid via Checkout Session:", orderId);
           break;
 
