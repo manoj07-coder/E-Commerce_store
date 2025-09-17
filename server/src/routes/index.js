@@ -6,6 +6,7 @@ import cartRouter from "./cart.routes.js";
 import orderRouter from "./order.routes.js";
 import stripeWebhookRouter from "./webhook.js";
 import reviewRouter from "./review.routes.js";
+import adminRouter from "./admin.routes.js";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/cart", cartRouter);
 router.use("/orders", orderRouter);
 router.use("/webhooks", stripeWebhookRouter);
 router.use("/reviews", reviewRouter);
+router.use("/admin", adminRouter);
 
 export default router;
