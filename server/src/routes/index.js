@@ -7,9 +7,11 @@ import orderRouter from "./order.routes.js";
 import stripeWebhookRouter from "./webhook.js";
 import reviewRouter from "./review.routes.js";
 import adminRouter from "./admin.routes.js";
+import { getHealth } from "../controllers/health.controller.js";
 
 const router = Router();
 
+router.get("/health", getHealth);
 router.use("/auth", authRouter);
 router.use("/products", productRouter);
 router.use("/category", categoryRouter);
