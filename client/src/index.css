@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/bungee";
+
 :root {
   --bg: #0f172a;
   --card: #0b1220;
