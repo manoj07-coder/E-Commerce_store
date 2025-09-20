@@ -3,9 +3,11 @@ import { combineReducers } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; //localstorage
 import authReducer from "../features/auth/authSlice.js";
+import productReducer from "../features/products/productSlice.js";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  product: productReducer,
 });
 
 const persistConfig = {
