@@ -15,7 +15,7 @@ export const createApp = () => {
   app.use(pinoHttp({ logger }));
 
   // ⚡ Stripe webhook FIRST, using express.raw() inside router
-  app.use("/api/webhooks", stripeWebhookRouter);
+  app.use("/api/webhook", stripeWebhookRouter);
 
   // Normal middleware for everything else
   app.use(express.json({ limit: "1mb" }));

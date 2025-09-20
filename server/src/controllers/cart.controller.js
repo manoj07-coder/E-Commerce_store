@@ -1,3 +1,4 @@
+// controllers/cartController.js
 import Product from "../models/Product.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import Cart from "../models/Cart.js";
@@ -12,10 +13,12 @@ export const addToCart = asyncHandler(async (req, res) => {
   const { productId, qty = 1 } = req.body;
   const product = await Product.findById(productId);
   if (!product) {
-    return res
-      .status(404)
-      .json({ success: false, error: { message: "Product not found" } });
+    return res.status(404).json({
+      success: false,
+      error: { message: "Product not found" },
+    });
   }
+
   let cart = await Cart.findOne({ user: req.user._id });
   if (!cart) {
     cart = new Cart({ user: req.user._id, items: [] });
@@ -69,7 +72,7 @@ export const checkOut = asyncHandler(async (req, res) => {
 
   // create Stripe Checkout Session
   const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"], // add "link" if needed
+    payment_method_types: ["card"],
     line_items: cart.items.map((i) => ({
       price_data: {
         currency: "inr",
@@ -80,8 +83,9 @@ export const checkOut = asyncHandler(async (req, res) => {
     })),
     mode: "payment",
     metadata: { orderId: order._id.toString() },
+    payment_intent_data: { metadata: { orderId: order._id.toString() } }, // ✅ also on PaymentIntent
     success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: "http://localhost:3000/cancel",
+    cancel_url: `http://localhost:3000/cancel`,
   });
 
   // save session info in order
@@ -92,9 +96,7 @@ export const checkOut = asyncHandler(async (req, res) => {
   };
   await order.save();
 
-  // empty cart
-  cart.items = [];
-  await cart.save();
+  // ❌ don't clear cart here — let webhook do it after payment succeeds
 
   res.json(ok({ orderId: order._id, checkoutUrl: session.url }));
 });
