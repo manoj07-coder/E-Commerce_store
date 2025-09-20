@@ -17,17 +17,19 @@ const ProductCard = ({ product }) => {
             className="max-h-full"
           />
         </div>
-        <div>
-          <div className="block font-semibold truncate">{product.name}</div>
-          <div className="mt-2 flex items-center justify-between">
-            <div className="text-lg font-bold">₹ {product.price}</div>
-            <AnimatedButton>Add</AnimatedButton>
-          </div>
-          <div className="text-sm text-gray-500 mt-2">
-            {product.ratingCount} reviews • {product.ratingsAverage} ⭑
-          </div>
-        </div>
       </Link>
+      <div>
+        <Link to={`/products/${product._id}`}>
+          <div className="block font-semibold truncate">{product.name}</div>
+        </Link>
+        <div className="mt-2 flex items-center justify-between">
+          <div className="text-lg font-bold">₹ {product.price}</div>
+          <AnimatedButton>Add</AnimatedButton>
+        </div>
+        <div className="text-sm text-gray-500 mt-2">
+          {product.ratingCount} reviews • {product.ratingsAverage} ⭑
+        </div>
+      </div>
     </motion.div>
   );
 };
