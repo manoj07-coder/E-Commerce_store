@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCart } from "./cartSlice.js";
+import { checkOut, fetchCart } from "./cartSlice.js";
 import AnimatedButton from "../../components/AnimatedButton.jsx";
 
 const CartPage = () => {
@@ -10,6 +10,15 @@ const CartPage = () => {
   useEffect(() => {
     dispatch(fetchCart());
   }, [dispatch]);
+
+  const handleCheckout = async () => {
+    const result = await dispatch(checkOut());
+    console.log(result.payload);
+
+    if (result?.payload?.checkoutUrl) {
+      window.location.href = result.payload.checkoutUrl;
+    }
+  };
 
   return (
     <div>
@@ -36,7 +45,9 @@ const CartPage = () => {
             </div>
           ))}
           <div className="text-right">
-            <AnimatedButton>Proceed to Checkout</AnimatedButton>
+            <AnimatedButton onClick={handleCheckout}>
+              Proceed to Checkout
+            </AnimatedButton>
           </div>
         </div>
       )}

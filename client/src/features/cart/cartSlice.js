@@ -4,7 +4,6 @@ import api from "../../api/axios.js";
 export const fetchCart = createAsyncThunk("cart/fetch", async (_, thunkAPI) => {
   try {
     const res = await api.get("/cart");
-    console.log("Cart response: ", res.data);
 
     return res.data.data;
   } catch (error) {
@@ -20,6 +19,11 @@ export const addToCart = createAsyncThunk(
     return res.data.data;
   }
 );
+
+export const checkOut = createAsyncThunk("cart/checkout", async () => {
+  const res = await api.post("/cart/checkout");
+  return res.data.data;
+});
 
 const CartSlice = createSlice({
   name: "cart",
@@ -50,6 +54,9 @@ const CartSlice = createSlice({
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.items = action.payload.items || [];
+      })
+      .addCase(checkOut.fulfilled, (state, action) => {
+        state.checkOutUrl = action.payload.checkoutUrl;
       });
   },
 });
