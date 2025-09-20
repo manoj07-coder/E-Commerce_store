@@ -27,7 +27,25 @@ export const register = asyncHandler(async (req, res) => {
   }
   const user = new User({ name, email, password, role });
   await user.save();
-  res.status(201).json(ok({ id: user._id, email: user.email }));
+
+  const access = signAccessToken(user);
+  const refresh = signRefreshToken(user);
+
+  user.refreshTokens.push({ token: refresh, createdAt: new Date() });
+  await user.save();
+
+  res.status(201).json(
+    ok({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      accessToken: access,
+      refreshToken: refresh,
+    })
+  );
 });
 
 export const login = asyncHandler(async (req, res) => {
@@ -47,7 +65,18 @@ export const login = asyncHandler(async (req, res) => {
   user.refreshTokens.push({ token: refresh, createdAt: new Date() });
   await user.save();
 
-  res.json(ok({ accessToken: access, refreshToken: refresh }));
+  res.json(
+    ok({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      accessToken: access,
+      refreshToken: refresh,
+    })
+  );
 });
 
 export const refresh = asyncHandler(async (req, res) => {

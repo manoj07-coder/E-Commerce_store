@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import AuthForm from "../features/auth/AuthForm";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { register } from "../features/auth/authSlice.js";
+import { useNavigate } from "react-router-dom";
+import { login } from "../features/auth/authSlice.js";
 
-const Register = () => {
+const Login = () => {
   const [loading, setLoading] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleRegister = async (payload) => {
+  const handleLogin = async (payload) => {
     setLoading(true);
     try {
-      const res = await dispatch(register(payload));
-
+      const res = await dispatch(login(payload));
       if (res?.payload?.accessToken) {
         navigate("/");
       }
@@ -28,14 +26,9 @@ const Register = () => {
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
       <h2 className="text-2xl font-semibold mb-4">Login</h2>
-      <AuthForm
-        onSubmit={handleRegister}
-        submitLabel="Create account"
-        showName
-        loading={loading}
-      />
+      <AuthForm onSubmit={handleLogin} loading={loading} />
     </div>
   );
 };
 
-export default Register;
+export default Login;
