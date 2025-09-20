@@ -5,7 +5,10 @@ import AnimatedButton from "../../components/AnimatedButton";
 
 const ProductCard = ({ product }) => {
   return (
-    <motion.div>
+    <motion.div
+      whileHover={{ y: -6 }}
+      className="bg-white rounded-lg shadow-sm overflow-hidden "
+    >
       <Link to={`/products/${product._id}`}>
         <div className="h-44 bg-gray-100 flex items-center justify-center">
           <img

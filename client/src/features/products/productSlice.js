@@ -9,6 +9,14 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const fetchProductById = createAsyncThunk(
+  "products/fetchById",
+  async (id) => {
+    const res = await api.get(`/products/${id}`);
+    return res.data.data;
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
@@ -34,6 +42,16 @@ const productSlice = createSlice({
         state.status = "succeeded";
       })
       .addCase(fetchProducts.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(fetchProductById.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.current = action.payload;
+        state.status = "succeeded";
+      })
+      .addCase(fetchProductById.rejected, (state) => {
         state.status = "failed";
       });
   },
