@@ -23,11 +23,11 @@ const CartPage = () => {
               key={item.product._id}
               className="flex items-center gap-4  bg-white p-4 rounded shadow"
             >
-              <img
-                src={item.product.images[0]}
+              {/* <img
+                src={item.product.images[0] || "/placeholder.png"}
                 alt={item.product.name}
                 className="w-20 h-20 object-cover"
-              />
+              /> */}
               <div className="flex-1">
                 <div className="font-medium">{item.product.name}</div>
                 <div className="text-sm text-gray-500">{item.qty}</div>

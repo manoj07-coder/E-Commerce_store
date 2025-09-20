@@ -1,21 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById } from "../features/products/productSlice";
+import { fetchProductById } from "../features/products/productSlice.js";
 import Loader from "../components/Loader";
 import AnimatedButton from "../components/AnimatedButton";
+import { addToCart } from "../features/cart/cartSlice.js";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector((store) => store.product.current);
   const status = useSelector((store) => store.product.status);
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
     if (id) {
       dispatch(fetchProductById(id));
     }
   }, [dispatch, id]);
+  const handleAdd = async () => {
+    await dispatch(addToCart({ productId: id, qty }));
+  };
 
   if (status === "loading" || !product)
     return (
@@ -39,7 +44,11 @@ const ProductDetail = () => {
         <div className="mt-4 text-gray-600">{product.description}</div>
         <div className="mt-4 flex items-center gap-4">
           <label className="text-sm">Qty</label>
-          <select>
+          <select
+            value={qty}
+            onChange={(e) => setQty(Number(e.target.value))}
+            className="border rounded px-2 py-1"
+          >
             {Array.from(
               { length: Math.min(10, product.stock || 5) },
               (_, i) => i + 1
@@ -49,7 +58,7 @@ const ProductDetail = () => {
               </option>
             ))}
           </select>
-          <AnimatedButton>Add to cart</AnimatedButton>
+          <AnimatedButton onClick={handleAdd}>Add to cart</AnimatedButton>
         </div>
         <div className="mt-6">
           <h3 className="font-semibold">Product details</h3>

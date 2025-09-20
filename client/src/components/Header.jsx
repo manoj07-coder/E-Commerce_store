@@ -7,10 +7,14 @@ import { useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice.js";
 
 const Header = () => {
-  const totalQty = 4;
+  const cartItems = useSelector((store) => store.cart.items) || [];
 
   const auth = useSelector((store) => store.auth);
+
   const dispatch = useDispatch();
+
+  const totalQty =
+    (cartItems && cartItems.reduce((s, i) => s + (i.qty || 0), 0)) || 0;
 
   return (
     <header className="bg-white shadow-sm">

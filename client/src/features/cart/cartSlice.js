@@ -13,6 +13,14 @@ export const fetchCart = createAsyncThunk("cart/fetch", async (_, thunkAPI) => {
   }
 });
 
+export const addToCart = createAsyncThunk(
+  "cart/add",
+  async ({ productId, qty = 1 }) => {
+    const res = await api.post("/cart/add", { productId, qty });
+    return res.data.data;
+  }
+);
+
 const CartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -39,6 +47,9 @@ const CartSlice = createSlice({
       .addCase(fetchCart.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.items = action.payload.items || [];
       });
   },
 });
