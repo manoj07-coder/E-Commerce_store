@@ -2,9 +2,15 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import Logo from "./Logo";
 import { HiShoppingCart } from "react-icons/hi";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { logout } from "../features/auth/authSlice.js";
 
 const Header = () => {
   const totalQty = 4;
+
+  const auth = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
 
   return (
     <header className="bg-white shadow-sm">
@@ -47,14 +53,29 @@ const Header = () => {
               </span>
             )}
           </Link>
-          <div className="flex gap-2">
-            <Link to="/login" className="text-sm">
-              Sign in
-            </Link>
-            <Link to="/register" className="text-sm font-semibold text-primary">
-              Sign up
-            </Link>
-          </div>
+          {auth.accessToken ? (
+            <div className="flex items-center gap-2">
+              <div className="text-sm">Welcome</div>
+              <button
+                onClick={() => dispatch(logout())}
+                className="text-sm text-red-500"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Link to="/login" className="text-sm">
+                Sign in
+              </Link>
+              <Link
+                to="/register"
+                className="text-sm font-semibold text-primary"
+              >
+                Sign up
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </header>
