@@ -84,8 +84,8 @@ export const checkOut = asyncHandler(async (req, res) => {
     mode: "payment",
     metadata: { orderId: order._id.toString() },
     payment_intent_data: { metadata: { orderId: order._id.toString() } }, // ✅ also on PaymentIntent
-    success_url: `http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `http://localhost:3000/cancel`,
+    success_url: `http://localhost:4000/api/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `http://localhost:4000/api/cancel`,
   });
 
   // save session info in order
