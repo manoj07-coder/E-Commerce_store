@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./features/cart/CartPage";
 import PrivateRoute from "./components/PrivateRoute";
+import Category from "./pages/Category";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route path="/category" element={<Category />} />
         </Routes>
       </main>
       <Footer />
