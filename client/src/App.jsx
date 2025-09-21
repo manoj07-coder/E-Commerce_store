@@ -9,6 +9,7 @@ import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./features/cart/CartPage";
 import PrivateRoute from "./components/PrivateRoute";
 import Category from "./pages/Category";
+import Order from "./pages/Order";
 
 const App = () => {
   return (
@@ -29,6 +30,14 @@ const App = () => {
             }
           />
           <Route path="/category" element={<Category />} />
+          <Route
+            path="/orders"
+            element={
+              <PrivateRoute>
+                <Order />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />
