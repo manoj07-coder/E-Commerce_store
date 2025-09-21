@@ -35,11 +35,13 @@ export const getProducts = asyncHandler(async (req, res) => {
     minPrice,
     maxPrice,
     sort = "-createdAt",
+    category,
   } = req.query;
   const filter = {};
   if (q) filter.$text = { $search: q };
   if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
   if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxprice) };
+  if (category) filter.category = category;
 
   const skip = (Number(page) - 1) * Number(limit);
   const total = await Product.countDocuments(filter);
