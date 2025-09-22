@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkOut, fetchCart, updateCart } from "./cartSlice.js";
+import { checkOut, fetchCart, removeCart, updateCart } from "./cartSlice.js";
 import AnimatedButton from "../../components/AnimatedButton.jsx";
 
 const CartPage = () => {
@@ -10,6 +10,8 @@ const CartPage = () => {
   useEffect(() => {
     dispatch(fetchCart());
   }, [dispatch]);
+
+  const total = cart.reduce((acc, i) => acc + i.product.price * i.qty, 0);
 
   const handleCheckout = async () => {
     const result = await dispatch(checkOut());
@@ -77,10 +79,16 @@ const CartPage = () => {
               <div className="text-lg font-bold">₹ {item.price * item.qty}</div>
             </div>
           ))}
-          <div className="text-right">
-            <AnimatedButton onClick={handleCheckout}>
-              Proceed to Checkout
-            </AnimatedButton>
+          <div className="flex justify-between items-center mt-4">
+            <div className="text-xl  font-bold">Total: {total}</div>
+            <div className="flex gap-3">
+              <AnimatedButton onClick={() => dispatch(removeCart())}>
+                Clear cart
+              </AnimatedButton>
+              <AnimatedButton onClick={handleCheckout}>
+                Proceed to Checkout
+              </AnimatedButton>
+            </div>
           </div>
         </div>
       )}
