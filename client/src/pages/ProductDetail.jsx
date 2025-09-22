@@ -38,7 +38,7 @@ const ProductDetail = () => {
     }
   }, [dispatch, id]);
   const handleAdd = async () => {
-    await dispatch(addToCart({ product: id, qty }));
+    await dispatch(addToCart({ productId: id, qty }));
   };
 
   const handleSubmit = async (e) => {
