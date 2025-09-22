@@ -24,7 +24,14 @@ import hpp from "hpp";
 
 export function applySecurity(app, origin) {
   app.use(helmet());
-  app.use(cors({ origin, credentials: true }));
+  app.use(
+    cors({
+      origin,
+      credentials: true,
+      methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
   app.use(compression());
   app.use(hpp());
 }
