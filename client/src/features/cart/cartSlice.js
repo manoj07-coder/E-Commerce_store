@@ -20,6 +20,19 @@ export const addToCart = createAsyncThunk(
   }
 );
 
+export const updateCart = createAsyncThunk(
+  "cart/update",
+  async ({ productId, qty }) => {
+    const res = await api.put(`/cart/${productId}`, { qty });
+    return res.data.data;
+  }
+);
+
+export const removeCart = createAsyncThunk("cart/clear", async () => {
+  const res = await api.delete("/cart");
+  return res.data.data;
+});
+
 export const checkOut = createAsyncThunk("cart/checkout", async () => {
   const res = await api.post("/cart/checkout");
   return res.data.data;
@@ -57,6 +70,12 @@ const CartSlice = createSlice({
       })
       .addCase(checkOut.fulfilled, (state, action) => {
         state.checkOutUrl = action.payload.checkoutUrl;
+      })
+      .addCase(updateCart.fulfilled, (state, action) => {
+        state.items = action.payload.items || [];
+      })
+      .addCase(removeCart.fulfilled, (state) => {
+        state.items = [];
       });
   },
 });

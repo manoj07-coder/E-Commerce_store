@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkOut, fetchCart } from "./cartSlice.js";
+import { checkOut, fetchCart, updateCart } from "./cartSlice.js";
 import AnimatedButton from "../../components/AnimatedButton.jsx";
 
 const CartPage = () => {
@@ -40,6 +40,39 @@ const CartPage = () => {
               <div className="flex-1">
                 <div className="font-medium">{item.product.name}</div>
                 <div className="text-sm text-gray-500">{item.qty}</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  className="px-2 py-1 rounded border"
+                  onClick={() => {
+                    const productId =
+                      typeof item.product === "string"
+                        ? item.product
+                        : item.product._id;
+                    dispatch(
+                      updateCart({
+                        productId,
+                        qty: item.qty - 1,
+                      })
+                    );
+                  }}
+                >
+                  -
+                </button>
+                <span>{item.qty}</span>
+                <button
+                  className="px-2 py-1 border rounded"
+                  onClick={() =>
+                    dispatch(
+                      updateCart({
+                        productId: item.product._id,
+                        qty: item.qty + 1,
+                      })
+                    )
+                  }
+                >
+                  +
+                </button>
               </div>
               <div className="text-lg font-bold">₹ {item.price * item.qty}</div>
             </div>
