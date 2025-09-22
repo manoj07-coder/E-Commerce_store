@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import Cart from "../models/Cart.js";
 import { ok } from "../utils/apiResponse.js";
 import Order from "../models/Order.js";
+import User from "../models/User.js";
 import Stripe from "stripe";
 import { ENV } from "../config/env.js";
 
@@ -99,4 +100,35 @@ export const checkOut = asyncHandler(async (req, res) => {
   // ❌ don't clear cart here — let webhook do it after payment succeeds
 
   res.json(ok({ orderId: order._id, checkoutUrl: session.url }));
+});
+
+export const updateCartItem = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const { qty } = req.body;
+
+  const cart = await Cart.findOne({ user: req.user._id });
+  if (!cart) return res.status(404).json(error("Cart not found"));
+
+  const item = cart.items.find((i) => i.product.toString() === productId);
+  if (!item) return res.status(404).json(error("Item not found in cart"));
+
+  if (qty <= 0) {
+    cart.items = cart.items.filter((i) => i.product.toString() !== productId);
+  } else {
+    item.qty = qty;
+  }
+
+  await cart.save();
+  res.json(ok(cart));
+});
+
+export const removeCart = asyncHandler(async (req, res) => {
+  const cart = await Cart.findOne({ user: req.user._id });
+  if (!cart)
+    return res.status(404).json({ error: { message: "Cart not found" } });
+
+  cart.items = [];
+
+  await cart.save();
+  res.json(ok(cart));
 });
