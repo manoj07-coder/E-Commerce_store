@@ -106,14 +106,19 @@ export const updateCartItem = asyncHandler(async (req, res) => {
   const { productId } = req.params;
   const { qty } = req.body;
 
-  const cart = await Cart.findOne({ user: req.user._id });
+  const cart = await Cart.findOne({ user: req.user._id }).populate(
+    "items.product",
+    "name price images"
+  );
   if (!cart) return res.status(404).json(error("Cart not found"));
 
-  const item = cart.items.find((i) => i.product.toString() === productId);
+  const item = cart.items.find((i) => i.product._id.toString() === productId);
   if (!item) return res.status(404).json(error("Item not found in cart"));
 
   if (qty <= 0) {
-    cart.items = cart.items.filter((i) => i.product.toString() !== productId);
+    cart.items = cart.items.filter(
+      (i) => i.product._id.toString() !== productId
+    );
   } else {
     item.qty = qty;
   }
