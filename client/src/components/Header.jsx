@@ -47,6 +47,14 @@ const Header = () => {
           >
             Sell
           </NavLink>
+          <NavLink
+            to="/orders"
+            className={({ isActive }) =>
+              isActive ? "text-accent font-semibold" : " "
+            }
+          >
+            My orders
+          </NavLink>
         </nav>
         <div className="flex items-center gap-4">
           <Link to="/cart" className="relative inline-flex items-center gap-2">
