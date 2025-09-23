@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios.js";
+import { Link } from "react-router-dom";
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
@@ -18,7 +19,11 @@ const Order = () => {
       ) : (
         <div className="space-y-2">
           {orders.map((order) => (
-            <div key={order._id} className="bg-white rounded shadow p-4 border">
+            <Link
+              to={`/orders/${order._id}`}
+              key={order._id}
+              className=" block bg-white rounded shadow p-4 border hover:bg-gray-50"
+            >
               <div className="flex justify-between">
                 <div className="font-semibold">Order #{order._id}</div>
                 <div className="text-sm text-gray-500">
@@ -38,7 +43,7 @@ const Order = () => {
                 ))}
               </div>
               <div className="mt-2 font-bold">Total: ₹{order.total}</div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
