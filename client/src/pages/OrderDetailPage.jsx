@@ -41,6 +41,17 @@ const OrderDetailPage = () => {
         </div>
       </div>
 
+      {/* payment info */}
+      {order.paymentInfo && (
+        <div className="mb-4">
+          <h2 className="font-semibold text-lg">Payment Info</h2>
+          <div>Provider: {order.paymentInfo.provider || "-"}</div>
+          <div>Provider Id: {order.paymentInfo.providerId || "-"}</div>
+          <div>Status: {order.paymentInfo.status || "-"}</div>
+        </div>
+      )}
+
+      {/* items */}
       <h2 className="text-lg font-semibold mb-2">Items</h2>
       <ul className="space-y-2">
         {order.items.map((item, idx) => (
