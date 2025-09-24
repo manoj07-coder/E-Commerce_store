@@ -40,7 +40,7 @@ export const getProducts = asyncHandler(async (req, res) => {
   const filter = {};
   if (q) filter.$text = { $search: q };
   if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
-  if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxprice) };
+  if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
   if (category) filter.category = category;
 
   const skip = (Number(page) - 1) * Number(limit);
@@ -110,4 +110,11 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   await redis.del(`product:${id}`);
 
   res.json(ok({ id }));
+});
+
+export const getMyProducts = asyncHandler(async (req, res) => {
+  const items = await Product.find({ seller: req.user._id })
+    .populate("category", "name slug")
+    .lean();
+  res.json(ok(items));
 });
