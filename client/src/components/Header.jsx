@@ -39,14 +39,27 @@ const Header = () => {
           >
             Categories
           </NavLink>
-          <NavLink
-            to="/seller"
-            className={({ isActive }) =>
-              isActive ? "text-accent font-semibold" : " "
-            }
-          >
-            Sell
-          </NavLink>
+          {auth.user?.role === "seller" && (
+            <NavLink
+              to="/seller"
+              className={({ isActive }) =>
+                isActive ? "text-accent font-semibold" : " "
+              }
+            >
+              Dashboard
+            </NavLink>
+          )}
+          {auth.user?.role === "admin" && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                isActive ? "text-accent font-semibold" : " "
+              }
+            >
+              Dashboard
+            </NavLink>
+          )}
+
           <NavLink
             to="/orders"
             className={({ isActive }) =>

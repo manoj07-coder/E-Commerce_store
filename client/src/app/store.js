@@ -9,12 +9,14 @@ import api from "../api/axios.js";
 import { setAuthTokens, logout } from "../features/auth/authSlice.js";
 import axios from "axios";
 import reviewReducer from "../features/reviews/reviewSlice.js";
+import myProductReducer from "../features/products/myProductSlice.js";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   product: productReducer,
   cart: cartReducer,
   review: reviewReducer,
+  myProduct: myProductReducer,
 });
 
 const persistConfig = {

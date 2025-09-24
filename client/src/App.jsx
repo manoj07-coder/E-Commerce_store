@@ -11,6 +11,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import Category from "./pages/Category";
 import Order from "./pages/Order";
 import OrderDetailPage from "./pages/OrderDetailPage";
+import SellerDashboard from "./pages/SellerDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   return (
@@ -44,6 +46,22 @@ const App = () => {
             element={
               <PrivateRoute>
                 <OrderDetailPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/seller"
+            element={
+              <PrivateRoute allowedRoles={["seller"]} redirect="/">
+                <SellerDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute allowedRoles={["admin"]} redirect="/">
+                <AdminDashboard />
               </PrivateRoute>
             }
           />
