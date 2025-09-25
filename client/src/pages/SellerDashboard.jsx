@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createMyProduct,
+  deleteMyProduct,
   fetchMyProducts,
+  updateMyProduct,
 } from "../features/products/myProductSlice.js";
 import AnimatedButton from "../components/AnimatedButton.jsx";
 
@@ -19,21 +21,41 @@ const SellerDashboard = () => {
     images: [""],
   });
 
+  const [editingId, setEditingId] = useState(null);
+
   useEffect(() => {
     dispatch(fetchMyProducts());
   }, [dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createMyProduct(form));
-    setForm({
-      name: "",
-      price: "",
-      stock: "",
-      category: "",
-      description: "",
-      images: [""],
-    });
+    if (editingId) {
+      dispatch(updateMyProduct({ id: editingId, data: form }));
+      setEditingId(null);
+      setForm({
+        name: "",
+        price: "",
+        stock: "",
+        category: "",
+        description: "",
+        images: [""],
+      });
+    } else {
+      dispatch(createMyProduct(form));
+      setForm({
+        name: "",
+        price: "",
+        stock: "",
+        category: "",
+        description: "",
+        images: [""],
+      });
+    }
+  };
+
+  const start = (item) => {
+    setForm({ ...item, category: item.category._id });
+    setEditingId(item._id);
   };
 
   return (
@@ -77,7 +99,9 @@ const SellerDashboard = () => {
           className="w-full border px-2 py-1 "
           onChange={(e) => setForm({ ...form, images: [e.target.value] })}
         />
-        <AnimatedButton type="submit">Create Product</AnimatedButton>
+        <AnimatedButton type="submit">
+          {editingId ? "Update Product" : "Create Product"}
+        </AnimatedButton>
       </form>
 
       {/* list items */}
@@ -92,8 +116,15 @@ const SellerDashboard = () => {
               <div className="text-sm text-gray-500">{item.price}</div>
             </div>
             <div className="flex gap-2">
-              <button className="text-blue-500">Edit</button>
-              <button className="text-red-500">Delete</button>
+              <button className="text-blue-500" onClick={() => start(item)}>
+                Edit
+              </button>
+              <button
+                className="text-red-500"
+                onClick={() => dispatch(deleteMyProduct(item._id))}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}

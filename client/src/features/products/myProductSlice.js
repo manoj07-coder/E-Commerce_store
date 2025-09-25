@@ -14,6 +14,22 @@ export const createMyProduct = createAsyncThunk(
   }
 );
 
+export const deleteMyProduct = createAsyncThunk(
+  "products/delete",
+  async (id) => {
+    const res = await api.delete(`/products/${id}`);
+    return res.data.data;
+  }
+);
+
+export const updateMyProduct = createAsyncThunk(
+  "products/update",
+  async ({ id, data }) => {
+    const res = await api.put(`/products/${id}`, data);
+    return res.data.data;
+  }
+);
+
 const myProductSlice = createSlice({
   name: "myProducts",
   initialState: {
@@ -27,7 +43,20 @@ const myProductSlice = createSlice({
         state.items = action.payload || [];
       })
       .addCase(createMyProduct.fulfilled, (state, action) => {
-        state.items.push(action.payload.product);
+        const newProduct = action.payload?.product || action.payload;
+        if (newProduct) state.items.push(newProduct);
+      })
+      .addCase(deleteMyProduct.fulfilled, (state, action) => {
+        state.items = state.items.filter((p) => p._id !== action.payload.id);
+      })
+      .addCase(updateMyProduct.fulfilled, (state, action) => {
+        const updated = action.payload?.product || action.payload;
+        if (!updated || !updated._id) return;
+
+        state.items = state.items.map((item) => {
+          if (!item) return null;
+          return item._id === updated._id ? updated : item;
+        });
       });
   },
 });
