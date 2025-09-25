@@ -6,6 +6,14 @@ export const fetchMyProducts = createAsyncThunk("products/mine", async () => {
   return res.data.data;
 });
 
+export const createMyProduct = createAsyncThunk(
+  "products/create",
+  async (data) => {
+    const res = await api.post("/products", data);
+    return res.data.data;
+  }
+);
+
 const myProductSlice = createSlice({
   name: "myProducts",
   initialState: {
@@ -14,9 +22,13 @@ const myProductSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchMyProducts.fulfilled, (state, action) => {
-      state.items = action.payload || [];
-    });
+    builder
+      .addCase(fetchMyProducts.fulfilled, (state, action) => {
+        state.items = action.payload || [];
+      })
+      .addCase(createMyProduct.fulfilled, (state, action) => {
+        state.items.push(action.payload.product);
+      });
   },
 });
 
