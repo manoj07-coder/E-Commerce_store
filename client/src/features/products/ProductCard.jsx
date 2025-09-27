@@ -1,35 +1,43 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import AnimatedButton from "../../components/AnimatedButton";
+import { HiStar } from "react-icons/hi";
+import { FaRupeeSign } from "react-icons/fa";
 
 const ProductCard = ({ product }) => {
   return (
     <motion.div
-      whileHover={{ y: -6 }}
-      className="bg-white rounded-lg shadow-sm overflow-hidden "
+      whileHover={{ y: -6, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+      className="bg-white rounded-2xl  shadow-md hover:shadow-xl overflow-hidden "
     >
       <Link to={`/products/${product._id}`}>
-        <div className="h-44 bg-gray-100 flex items-center justify-center">
+        {/* image */}
+        <div className="h-48  bg-gray-100 flex items-center justify-center overflow-hidden">
           <img
             src={product.images?.[0]}
             alt={product.name}
-            className="max-h-full"
+            className="max-h-full object-contain transition-transform duration-300 hover:scale-105"
           />
         </div>
+        {/* Info */}
+        <div>
+          <div className="block font-semibold text-lg text-gray-800 truncate">
+            {product.name}
+          </div>
+          {/* Price */}
+          <div className="flex items-center gap-1 mt-2 text-xl font-bold text-gray-900">
+            <FaRupeeSign />
+            {product.price}
+          </div>
+          {/* Rating */}
+          <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+            <HiStar className="text-yellow-500" />
+            {product.ratingsAverage?.toFixed(1) || "0.0"}
+            <span>({product.ratingCount || 0})</span>
+          </div>
+        </div>
       </Link>
-      <div>
-        <Link to={`/products/${product._id}`}>
-          <div className="block font-semibold truncate">{product.name}</div>
-        </Link>
-        <div className="mt-2 flex items-center justify-between">
-          <div className="text-lg font-bold">₹ {product.price}</div>
-          <AnimatedButton>Add</AnimatedButton>
-        </div>
-        <div className="text-sm text-gray-500 mt-2">
-          {product.ratingCount} reviews • {product.ratingsAverage} ⭑
-        </div>
-      </div>
     </motion.div>
   );
 };
