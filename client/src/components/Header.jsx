@@ -28,7 +28,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gradient-to-r from-yellow-400 via-black to-white text-black fixed top-0 left-0 right-0 z-50 shadow-md">
+    <header className="bg-gradient-to-r from-yellow-300 to-yellow-600 text-black fixed top-0 left-0 right-0 z-50 shadow-md">
       <div className="container mx-auto px-4  py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img
@@ -70,12 +70,12 @@ const Header = () => {
               onMouseEnter={() => setShowMenu(true)}
               onMouseLeave={() => setShowMenu(false)}
             >
-              <HiUser className="text-2xl text-black" />
-              <span className="hidden sm:inline text-black font-medium">
+              <HiUser className="text-2xl text-white" />
+              <span className="hidden sm:inline text-white font-medium">
                 {auth.user?.name || "User"}
               </span>
               {showMenu && (
-                <div className="absolute right-0 top-full mt-2 bg-white text-black rounded-md shadow-lg w-48 p-2">
+                <div className="absolute  top-full mt-1 bg-white text-black rounded-md shadow-lg w-48 p-2">
                   <Link
                     to="/orders"
                     className="block px-4 py-2 hover:bg-gray-100 rounded"
@@ -115,12 +115,12 @@ const Header = () => {
               <HiUser className="text-2xl text-black" />
               <Link
                 to="/login"
-                className="hidden sm:inline text-black font-medium"
+                className="hidden sm:inline text-white font-medium"
               >
                 Login
               </Link>
               {showMenu && (
-                <div className="absolute right-0 top-full mt-2 bg-white text-black rounded-md shadow-lg w-48 p-2">
+                <div className="absolute  top-full mt-1 bg-white text-black rounded-md shadow-lg w-48 p-2">
                   <div className="px-4 py-2 text-gray-500 text-sm">
                     New user?
                   </div>
@@ -138,7 +138,7 @@ const Header = () => {
           {/* cart */}
           <Link
             to="/cart"
-            className="relative inline-flex items-center gap-1 text-black font-medium"
+            className="relative inline-flex items-center gap-1 text-white font-medium"
           >
             <HiShoppingCart className="text-2xl" />
             <span className="hidden sm:inline">Cart</span>
