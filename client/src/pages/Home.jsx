@@ -13,7 +13,7 @@ const Home = () => {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="bg-yellow-50 p-4 rounded-2xl shadow-md">
       <h1 className="text-3xl font-bold mb-6">Featured products</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3  md:grid-cols-4 gap-4">
         {products.map((product) => (
